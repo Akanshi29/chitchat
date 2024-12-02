@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .chat-container {
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .chat-header {
+            text-align: center;
+            background-color: #075e54;
+            color: #fff;
+            padding: 15px;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+
+        .chat-header h1 {
+            font-size: 24px;
+        }
+
+        .chat__item__container {
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 10px;
+            height: 300px;
+            max-height: 300px;
+            overflow-y: auto;
+            /* Vertical scrollbar will appear when content exceeds the container's height */
+            margin-bottom: 20px;
+        }
+
+        .chat-input-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fff;
+            text-align: center;
+        }
+
+        table td:hover {
+            background-color: #e0f7fa;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .message-timestamp {
+            font-size: 10px;
+            position: absolute;
+            top: 5px;
+            right: 5px;
+        }
+
+        .message-username {
+            font-size: 12px;
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h1>Chit-Chat <i class="fas fa-comment"></i></h1>
+        </div>
+
+        <div class="chat__item__container" id="id_chat_item_container">
+            <!-- User will be displayed here with a scrollbar -->
+            {% if contacts %}
+                <table class="table table-striped">
+                    <tbody>
+                        {% for contact in contacts %}
+                            <tr>
+                                <td><a href="{% url 'chat-page' %}">{{ contact.name }}</a></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>You have no active chats.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+
+</html>
