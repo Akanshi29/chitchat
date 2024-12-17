@@ -2,7 +2,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .models import UserProfile, ProfilePhoto
+from .models import UserProfile
 from .validators import validate_mobile_number  # Import the custom validator
 
 class UserRegistrationForm(UserCreationForm):
@@ -36,11 +36,7 @@ class UserRegistrationForm(UserCreationForm):
         profile = UserProfile.objects.create(
             user=user,
             birthday=self.cleaned_data['birthday'],
-            mobile_number=self.cleaned_data['mobile_number']
-        )
-        profile_photo = ProfilePhoto.objects.create(
-            user=profile,
+            mobile_number=self.cleaned_data['mobile_number'],
             profile_photo=self.cleaned_data['profile_photo']
         )
-
         return user

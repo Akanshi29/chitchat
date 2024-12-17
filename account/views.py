@@ -7,7 +7,7 @@ def register(request):
         form = UserRegistrationForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-            return redirect('login')  # Redirect to the login page after successful registration
+            return redirect('login-user')  # Redirect to the login page after successful registration
     else:
         form = UserRegistrationForm()
 

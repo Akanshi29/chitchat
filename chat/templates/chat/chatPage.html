@@ -27,18 +27,18 @@
             font-size: 24px;
         }
 
-        .chat-logout {
+        .chat-user {
             text-align: right;
             padding: 10px;
         }
 
-        .chat-logout a {
+        .chat-user a {
             text-decoration: none;
             color: #075e54;
             font-weight: bold;
         }
 
-        .chat-logout a:hover {
+        .chat-user a:hover {
             text-decoration: underline;
         }
 
@@ -85,7 +85,7 @@
             padding: 10px;
             position: relative;
         }
-
+        
         .chat-message.right {
                 background-color: black;
             width: 80%;
@@ -132,9 +132,7 @@
         </div>
         <div class="chat-logout">
             {% if request.user.is_authenticated %}
-            <div style="float: left;font-weight: bold; color: #036358;">{{ request.user|title }} </div>
-            <div style="float: right;"><a href="{% url 'logout-user' %}"><i class="fas fa-sign-out-alt"></i></a>
-            </div>
+            <div style="float: left;font-weight: bold; color: #036358;">{{ conatct_to }} </div>
             <div style="clear: both;"></div>
             {% endif %}
         </div>
@@ -148,7 +146,11 @@
     </div>
     <script>
         //  establishes a WebSocket connection with the server.
-        const chatSocket = new WebSocket("ws://" + window.location.host + "/"); 
+        const groupId = "{{ group_id }}";  // Assuming you pass this variable to the template
+        const user = "{{ request.user.id }}";
+        const chatSocket = new WebSocket("ws://" + window.location.host + "/chat/" + groupId);
+
+        // const chatSocket = new WebSocket("ws://" + window.location.host + "/"); 
         chatSocket.onopen = function (e) {
             console.log("The connection was set up successfully!");
         };
@@ -169,6 +171,7 @@
             chatSocket.send(JSON.stringify({
                 message: messageInput,
                 username: "{{request.user.username}}",
+                send_to: groupId,
                 time: time
             }));
         };
@@ -178,9 +181,8 @@
             var div = document.createElement("div");
             div.className = (data.username === "{{request.user.username}}") ? "chat-message right" : "chat-message left";
             div.innerHTML = `<div class="message-content">
-                <span class="message-username">${data.username.charAt(0).toUpperCase() + data.username.slice(1)}</span>
+                <span class="message-username">${data.username} ${data.time}</span>
                 <span class="message-text">${data.message}</span>
-                <span class="message-timestamp">${data.time}</span>
             </div>`;
             document.querySelector("#id_message_send_input").value = "";
             messageContainer.appendChild(div);

@@ -27,6 +27,7 @@
             padding: 15px;
             border-top-left-radius: 10px;
             border-top-right-radius: 10px;
+            position: relative;
         }
 
         .chat-header h1 {
@@ -82,6 +83,63 @@
             bottom: 5px;
             right: 5px;
         }
+       
+        /* Style for the Settings button */
+        .settings-button {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: #fff;
+            color: #075e54;
+            font-size: 18px;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease;
+        }
+
+        .settings-button:hover {
+            background-color: #036358;
+            color: white;
+        }
+
+        /* Dropdown Menu */
+        .dropdown {
+            display: none;
+            position: absolute;
+            top: 40px;
+            left: 10px;
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            width: 150px;
+            padding: 10px;
+        }
+
+        .dropdown a {
+            display: block;
+            padding: 8px 10px;
+            text-decoration: none;
+            color: #075e54;
+            font-size: 14px;
+            border-radius: 5px;
+            transition: background-color 0.2s;
+        }
+
+        .dropdown a:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* Show dropdown when active */
+        .dropdown.active {
+            display: block;
+        }
+        
     </style>
 </head>
 
@@ -89,16 +147,39 @@
     <div class="chat-container">
         <div class="chat-header">
             <h1>Chit-Chat <i class="fas fa-comment"></i></h1>
-        </div>
+            <!-- Settings Button -->
+            <a href="javascript:void(0)" class="settings-button" id="settings-button">
+                <i class="fas fa-cog"></i>
+            </a>
+            </form>
 
+            <!-- Dropdown Menu -->
+            <div class="dropdown" id="dropdown-menu">
+                <a href="{% url 'create-group' %}" title="Create Group">Create Group</a>
+                <a href="{% url 'logout-user' %}">Logout</a>
+                <!-- Add other menu items here -->
+            </div>
+        </div>
         <div class="chat__item__container" id="id_chat_item_container">
             <!-- User will be displayed here with a scrollbar -->
-            {% if contacts %}
+            {% if groups %}
                 <table class="table table-striped">
                     <tbody>
-                        {% for contact in contacts %}
+                        {% for group in groups %}
                             <tr>
-                                <td><a href="{% url 'chat-page' %}">{{ contact.name }}</a></td>
+                                <td><a href="{% url 'chat-page' group.id %}">
+                                    {% if group.chat_type == 'group' %}
+                                        <!-- Display the title of the group -->
+                                        {{ group.title }}
+                                    {% else %}
+                                        <!-- For 1on1, display the name of the member -->
+                                        {% for member in group.members.all %}
+                                            {% if member.user != request.user %}
+                                                {{ member.user.username }}
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                </a></td>
                             </tr>
                         {% endfor %}
                     </tbody>
@@ -108,6 +189,13 @@
             {% endif %}
         </div>
     </div>
+    <script>
+        // Toggle the dropdown menu
+        document.getElementById('settings-button').addEventListener('click', function () {
+            const dropdown = document.getElementById('dropdown-menu');
+            dropdown.classList.toggle('active');
+        });
+    </script>
 </body>
 
 </html>
